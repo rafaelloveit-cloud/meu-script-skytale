@@ -4,7 +4,7 @@ import sys
 import tempfile
 from datetime import datetime
 
-# ================== CONFIGURAÇÕES ==================
+# ================== CONFIGURAÇÕES ==================  print("Nova funcionalidade!")
 GITHUB_USER = "SEU_USUARIO_AQUI"          # ← Troque pelo seu username do GitHub
 GITHUB_REPO = "meu-script-atualizavel"    # ← Troque pelo nome do seu repositório
 
