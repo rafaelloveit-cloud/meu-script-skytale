@@ -5,13 +5,13 @@ import tempfile
 from datetime import datetime
 
 # ================== CONFIGURAÇÕES ==================  print("Nova funcionalidade!")
-GITHUB_USER = "SEU_USUARIO_AQUI"          # ← Troque pelo seu username do GitHub
-GITHUB_REPO = "meu-script-atualizavel"    # ← Troque pelo nome do seu repositório
+GITHUB_USER = "rafaelloveit-cloud"          # ← Troque pelo seu username do GitHub
+GITHUB_REPO = "meu-script-skytale"    # ← Troque pelo nome do seu repositório
 
-VERSION_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/version.txt"
-SCRIPT_URL  = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/meu_script.py"
+VERSION_URL = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/version.txt"
+SCRIPT_URL  = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/meu_script.py"
 
-CURRENT_VERSION = "1.0.0"   # Mantenha sincronizado com o version.txt
+CURRENT_VERSION = "1.0.1"   # Mantenha sincronizado com o version.txt
 # ===================================================
 
 def verificar_atualizacao():
