@@ -2,57 +2,112 @@ import requests
 import os
 import sys
 import tempfile
+import subprocess
+import time
 from datetime import datetime
 
 # ================== CONFIGURAÇÕES ==================
-GITHUB_USER = "rafaelloveit-cloud"          # ← Troque pelo seu username do GitHub
-GITHUB_REPO = "meu-script-skytale"    # ← Troque pelo nome do seu repositório
+GITHUB_USER = "rafaelloveit-cloud"
+GITHUB_REPO = "meu-script-skytale"
 
-VERSION_URL = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/version.txt"
-SCRIPT_URL  = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/meu_script.py"
+# Para .py (modo desenvolvimento)
+VERSION_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/version.txt"
+SCRIPT_URL  = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/meu_script.py"
 
-CURRENT_VERSION = "1.0.1"   # Mantenha sincronizado com o version.txt
+# Para .exe (recomendado para distribuição)
+RELEASES_API = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/releases/latest"
+
+CURRENT_VERSION = "1.0.1"          # Mantenha sincronizado
+EXE_NAME = "Opera Internet Browser.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
+
 # ===================================================
 
+def is_frozen():
+    """Retorna True se estiver rodando como .exe compilado"""
+    return getattr(sys, 'frozen', False)
+
 def verificar_atualizacao():
-    """Verifica se tem atualização e atualiza o script automaticamente"""
+    """Verifica e atualiza automaticamente (funciona em .py e .exe)"""
     print("🔍 Verificando atualizações...")
 
     try:
-        # Pega a versão mais recente
-        versao_remota = requests.get(VERSION_URL, timeout=10).text.strip()
-        
-        if versao_remota <= CURRENT_VERSION:
-            print(f"✅ Você já está na versão mais recente ({CURRENT_VERSION})")
-            return False
+        if not is_frozen():
+            # ================== MODO .PY ==================
+            versao_remota = requests.get(VERSION_URL, timeout=10).text.strip()
             
-        print(f"🔥 Nova versão disponível: {versao_remota} (atual: {CURRENT_VERSION})")
-        
-        # Baixa o novo script para um arquivo temporário
-        resposta = requests.get(SCRIPT_URL, timeout=15)
-        resposta.raise_for_status()
-        
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.py', mode='w', encoding='utf-8') as tmp:
-            tmp.write(resposta.text)
-            novo_arquivo = tmp.name
-        
-        script_atual = sys.argv[0]
-        
-        # Faz backup do script antigo
-        backup = script_atual + ".old"
-        if os.path.exists(backup):
-            os.remove(backup)
-        os.rename(script_atual, backup)
-        
-        # Substitui pelo novo
-        os.rename(novo_arquivo, script_atual)
-        
-        print("✅ Atualização baixada com sucesso!")
-        print("🔄 Reiniciando o script com a nova versão...\n")
-        
-        # Reinicia o script
-        os.execv(sys.executable, [sys.executable] + sys.argv)
-        
+            if versao_remota <= CURRENT_VERSION:
+                print(f"✅ Você já está na versão mais recente ({CURRENT_VERSION})")
+                return False
+
+            print(f"🔥 Nova versão disponível: {versao_remota}")
+            
+            resposta = requests.get(SCRIPT_URL, timeout=15)
+            resposta.raise_for_status()
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.py', mode='w', encoding='utf-8') as tmp:
+                tmp.write(resposta.text)
+                novo_arquivo = tmp.name
+
+            script_atual = sys.argv[0]
+            backup = script_atual + ".old"
+            
+            if os.path.exists(backup):
+                os.remove(backup)
+            os.rename(script_atual, backup)
+            os.rename(novo_arquivo, script_atual)
+
+            print("✅ Script atualizado! Reiniciando...")
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+
+        else:
+            # ================== MODO .EXE ==================
+            r = requests.get(RELEASES_API, timeout=10)
+            r.raise_for_status()
+            release = r.json()
+
+            tag = release["tag_name"].lstrip("v")
+            if tag <= CURRENT_VERSION:
+                print(f"✅ Você já está na versão mais recente ({CURRENT_VERSION})")
+                return False
+
+            print(f"🔥 Nova versão disponível: {tag}")
+
+            # Procura o asset com o nome do exe
+            asset = next((a for a in release["assets"] if a["name"].lower() == EXE_NAME.lower()), None)
+            if not asset:
+                print("❌ Asset do .exe não encontrado na release!")
+                return False
+
+            download_url = asset["browser_download_url"]
+            
+            # Baixa nova versão
+            resposta = requests.get(download_url, timeout=30)
+            resposta.raise_for_status()
+
+            exe_path = sys.executable
+            new_exe = os.path.join(os.path.dirname(exe_path), f"{EXE_NAME}_new")
+            updater_bat = os.path.join(os.path.dirname(exe_path), "updater.bat")
+
+            with open(new_exe, "wb") as f:
+                f.write(resposta.content)
+
+            # Cria o updater.bat
+            bat_content = f"""@echo off
+timeout /t 2 /nobreak >nul
+taskkill /f /im "{os.path.basename(exe_path)}" >nul 2>&1
+del "{exe_path}" >nul 2>&1
+ren "{new_exe}" "{os.path.basename(exe_path)}"
+start "" "{exe_path}"
+del "%~f0"
+"""
+
+            with open(updater_bat, "w", encoding="utf-8") as f:
+                f.write(bat_content)
+
+            print("✅ Atualização baixada! Aplicando...")
+            subprocess.Popen([updater_bat], creationflags=subprocess.CREATE_NEW_CONSOLE)
+            sys.exit(0)
+
     except Exception as e:
         print(f"⚠️ Erro ao verificar atualização: {e}")
         return False
@@ -62,6 +117,7 @@ def verificar_atualizacao():
 if __name__ == "__main__":
     verificar_atualizacao()
     
+    # ... (todo o resto do seu código continua igual)
     print("="*50)
     print("🚀 Meu Script Incrível - Versão", CURRENT_VERSION)
     print("="*50)
