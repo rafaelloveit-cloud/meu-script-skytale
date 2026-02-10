@@ -18,7 +18,7 @@ SCRIPT_URL  = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/ma
 RELEASES_API = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/releases/latest"
 
 CURRENT_VERSION = "1.0.1"          # Mantenha sincronizado
-EXE_NAME = "Opera Internet Browser.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
+EXE_NAME = "Opera.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
 
 # ===================================================
 
