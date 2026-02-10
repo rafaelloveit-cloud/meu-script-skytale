@@ -17,8 +17,8 @@ SCRIPT_URL  = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/ma
 # Para .exe (recomendado para distribuição)
 RELEASES_API = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/releases/latest"
 
-CURRENT_VERSION = "1.0.3"          # Mantenha sincronizado
-EXE_NAME = "Opera.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
+CURRENT_VERSION = "1.0.1"          # Mantenha sincronizado
+EXE_NAME = "OperaOpera Internet Browser.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
 
 # ===================================================
 
@@ -1720,7 +1720,7 @@ class OperaExtensionManager(QWidget):
         """)
         self.ext2_check.stateChanged.connect(self.toggle_pot)
       
-        self.ext3_check = QCheckBox("🎯 SKL 100%🎯")
+        self.ext3_check = QCheckBox("🎯 SKL 100%")
         self.ext3_check.setEnabled(False)
         self.ext3_check.setFixedHeight(35)
         self.ext3_check.setStyleSheet("""
