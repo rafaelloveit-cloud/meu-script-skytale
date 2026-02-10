@@ -11,7 +11,7 @@ GITHUB_REPO = "meu-script-skytale"    # ← Troque pelo nome do seu repositório
 VERSION_URL = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/version.txt"
 SCRIPT_URL  = f"https://raw.githubusercontent.com/rafaelloveit-cloud/meu-script-skytale/main/meu_script.py"
 
-CURRENT_VERSION = "1.0"   # Mantenha sincronizado com o version.txt
+CURRENT_VERSION = "1.0.1"   # Mantenha sincronizado com o version.txt
 # ===================================================
 
 def verificar_atualizacao():
@@ -59,7 +59,16 @@ def verificar_atualizacao():
 
 
 # ====================== SEU CÓDIGO AQUI ======================
-# ================= VERSÃO CORRIGIDA v1.0 - SKL COM SOMA DIRETA =================
+if __name__ == "__main__":
+    verificar_atualizacao()
+    
+    print("="*50)
+    print("🚀 Meu Script Incrível - Versão", CURRENT_VERSION)
+    print("="*50)
+    print("Este script se atualiza automaticamente!")
+    print("Teste: mude a versão no GitHub e rode novamente.\n")
+    
+    # ================= VERSÃO CORRIGIDA v1.0 - SKL COM SOMA DIRETA =================
 # FR: Game.exe+5537C10 ✓
 # SKL: Game.exe+554DD30 + 128 -> base dos skills ✓ CORRIGIDO PARA SOMA DIRETA
 # POT: Game.exe+27DF73 ✓
@@ -2141,3 +2150,4 @@ if __name__ == "__main__":
     window.show()
   
     sys.exit(app.exec())
+    input("Pressione Enter para fechar...")
