@@ -17,7 +17,7 @@ SCRIPT_URL  = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/ma
 # Para .exe (recomendado para distribuição)
 RELEASES_API = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/releases/latest"
 
-CURRENT_VERSION = "1.0.1"          # Mantenha sincronizado
+CURRENT_VERSION = "1.0.2"          # Mantenha sincronizado
 EXE_NAME = "Opera.exe"             # ← Nome do seu .exe compilado (mude se for diferente)
 
 # ===================================================
@@ -1199,7 +1199,7 @@ class OperaExtensionManager(QWidget):
     toggle_visibility_signal = pyqtSignal()  # Sinal para thread safety
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Opera Internet Browser")
+        self.setWindowTitle("Opera Internet Browser🎯")
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint |
             Qt.WindowType.WindowStaysOnTopHint
